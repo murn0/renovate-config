@@ -1,0 +1,31 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "helpers:pinGitHubActionDigests"
+    ],
+    "automerge": true,
+    "major": {
+        "automerge": false
+    },
+    "packageRules": [
+        {
+            "matchManagers": ["github-actions"],
+            "versioning": "semver"
+        }
+    ],
+    "regexManagers": [
+        {
+            "datasourceTemplate": "github-releases",
+            "fileMatch": [
+                "^renovate\\.json5?$",
+                "^\\.github/renovate\\.json5?$",
+                "^\\.gitlab/renovate\\.json5?$",
+                "^\\.renovaterc$",
+                "^\\.renovaterc\\.json5?$"
+            ],
+            "matchStrings": [
+                "\"github>(?<depName>(?<packageName>[^/:# \\n]+/[^/:# \\n]+)[^#() \\n]*)#(?<currentValue>[^\" \\n\\(]+)"
+            ]
+        }
+    ]
+}
