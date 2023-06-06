@@ -11,7 +11,13 @@
         {
             "matchManagers": ["github-actions"],
             "versioning": "semver"
-        }
+        },
+        {
+            "enabled": false,
+            "matchUpdateTypes": [
+                "digest"
+            ]
+        },
     ],
     "regexManagers": [
         {
