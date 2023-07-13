@@ -1,0 +1,51 @@
+name: Auto Bump and generate PR
+on:
+  workflow_dispatch
+
+permissions: {}
+jobs:
+  release-PR:
+    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@01a0fe67e0d3a10a5eb3be27baf43ccb76ac0820 # v0.6.0
+    permissions:
+      issues: write # For create milestone
+      pull-requests: write # For pull requests to milestone
+    with:
+      changelog_config_json: |
+        {
+          "categories": [
+            {
+                "title": "## ⚠️ Breaking changes",
+                "labels": ["breaking change"]
+            },
+            {
+                "title": "## Features",
+                "labels": [
+                  "feature",
+                  "enhancement"
+                ]
+            },
+            {
+                "title": "## Fixes",
+                "labels": ["fix"]
+            },
+            {
+                "title": "## Tests",
+                "labels": ["test"]
+            },
+            {
+                "title": "## Others",
+                "labels": []
+            },
+            {
+                "title": "## Dependencies",
+                "labels": ["dependencies"]
+            }
+          ],
+          "template": "#{{CHANGELOG}}"
+        }
+      major_title: '## ⚠️ Breaking Changes'
+      minor_title: '## Features'
+      labels: 'release'
+    secrets:
+      gh_app_id: ${{secrets.GH_APP_ID}}
+      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
