@@ -1,0 +1,37 @@
+---
+name: Pull Request
+on: pull_request
+permissions: {}
+jobs:
+  add-label:
+    permissions:
+      contents: read
+    uses: murn0/auto-add-labels-workflow/.github/workflows/main.yaml@e9768034a4bce36cf1642c3850f85879a4f69119 # v0.2.0
+    secrets:
+      gh_app_id: ${{secrets.GH_APP_ID}}
+      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
+  
+  auto-merge:
+    permissions:
+      contents: read
+    uses: murn0/renovate-automerge-workflow/.github/workflows/main.yaml@62d0e754796dcc8527ea74b9f16a0652ff60a77d # v0.2.0
+    with:
+      filters: |
+        ghalint:
+          - .github/workflows/*.yaml
+          - aqua/aqua.yaml
+          - aqua/imports/ghalint.yaml
+          - ghalint.yaml
+        renovate-config-validator:
+          - renovate.json
+          - .github/workflows/pull_request.yaml
+          - .github/workflows/wc-renovate-config-validator.yaml
+        update-aqua-checksums:
+          - aqua/aqua.yaml
+          - aqua/imports/*.yaml
+          - aqua/aqua-checksums.json
+          - .github/workflows/pull_request.yaml
+          - .github/workflows/wc-update-aqua-checksums.yaml
+    secrets:
+      gh_app_id: ${{secrets.GH_APP_ID}}
+      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
