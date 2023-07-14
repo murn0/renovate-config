@@ -6,7 +6,7 @@ jobs:
   add-label:
     permissions:
       contents: read
-    uses: murn0/auto-add-labels-workflow/.github/workflows/main.yaml@e9768034a4bce36cf1642c3850f85879a4f69119 # v0.2.0
+    uses: murn0/auto-add-labels-workflow/.github/workflows/main.yaml@f97918aeaeddccf4be0689d48f05b82403c21586 # v0.4.1
     secrets:
       gh_app_id: ${{secrets.GH_APP_ID}}
       gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
