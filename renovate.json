@@ -3,6 +3,6 @@
     "extends": [
         "config:base",
         "github>murn0/renovate-config#v0.2.1",
-        "github>aquaproj/aqua-renovate-config#1.10.0"
+        "github>aquaproj/aqua-renovate-config#1.11.0"
     ]
 }
