@@ -11,25 +11,3 @@ jobs:
       gh_app_id: ${{secrets.GH_APP_ID}}
       gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
   
-  auto-merge:
-    permissions:
-      contents: read
-    uses: murn0/renovate-automerge-workflow/.github/workflows/main.yaml@c712e0419d4115557fbc1ce2260bd0aa4802692c # v0.4.1
-    with:
-      filters: |
-        ghalint:
-          - .github/workflows/*.yaml
-          - aqua/aqua.yaml
-          - aqua/imports/ghalint.yaml
-          - ghalint.yaml
-        renovate-config-validator:
-          - renovate.json
-          - .github/workflows/pull_request.yaml
-        update-aqua-checksums:
-          - aqua/aqua.yaml
-          - aqua/imports/*.yaml
-          - aqua/aqua-checksums.json
-          - .github/workflows/pull_request.yaml
-    secrets:
-      gh_app_id: ${{secrets.GH_APP_ID}}
-      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
