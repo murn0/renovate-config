@@ -49,7 +49,7 @@
               };
               renovate-config-validator = {
                 enable = true;
-                files = "(^|/).?renovate(?:rc)?(?:\.json5?)?$";
+                files = "(^|/).?(renovate|default)(?:rc)?(?:\.json5?)?$";
                 entry = "${pkgs.renovate}/bin/renovate-config-validator --strict";
               };
             };
