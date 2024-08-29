@@ -10,4 +10,36 @@ jobs:
     secrets:
       gh_app_id: ${{secrets.GH_APP_ID}}
       gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
-  
+
+  path-filter:
+    timeout-minutes: 10
+    runs-on: "ubuntu-22.04"
+    outputs:
+      renovate-config-validator: ${{steps.changes.outputs.renovate-config-validator}}
+      renovate-config-validator-files: ${{ steps.changes.outputs.renovate-config-validator_files }}
+    permissions: {}
+    steps:
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: changes
+        with:
+          list-files: shell
+          filters: |
+            renovate-config-validator:
+              - default.json
+              - renovate.json
+              - .github/workflows/pull_request.yaml
+
+  renovate-config-validator:
+    timeout-minutes: 10
+    needs: path-filter
+    if: needs.path-filter.outputs.renovate-config-validator == 'true'
+    runs-on: "ubuntu-22.04"
+    permissions: {}
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: run renovate-config-validator
+        run: |
+          nix develop --command pre-commit run renovate-config-validator --files ${{ needs.path-filter.outputs.renovate-config-validator-files }}
