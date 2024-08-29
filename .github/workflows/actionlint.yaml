@@ -5,6 +5,8 @@ on:
   pull_request:
     paths:
       - .github/workflows/*.yaml
+env:
+  PRE_COMMIT_COLOR: always
 jobs:
   actionlint:
     timeout-minutes: 10
@@ -15,9 +17,6 @@ jobs:
       - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: check actionlint version
-        run: |
-          nix develop --command actionlint --version
       - name: check ghalint version
         run: |
           nix build .#ghalint
