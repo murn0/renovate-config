@@ -15,10 +15,17 @@ jobs:
       - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: check actionlint version
+        run: |
+          nix develop --command actionlint --version
       - name: check ghalint version
         run: |
           nix build .#ghalint
           ./result/bin/ghalint --version
-      - name: run actionlint and ghalint
+      - name: run actionlint
         run: |
-          nix develop --command bash -c 'git ls-files -- ".github/workflows/*.yaml" | xargs pre-commit run --files'
+          nix develop --command pre-commit run actionlint --all-files
+      - name: run ghalint
+        run: |
+          nix develop --command pre-commit run ghalint --all-files
+
