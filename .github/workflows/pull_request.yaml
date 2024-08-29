@@ -32,16 +32,9 @@ jobs:
               - .github/workflows/pull_request.yaml
 
   renovate-config-validator:
-    timeout-minutes: 10
+    uses: ./.github/workflows/wc-renovate-config-validator.yaml
     needs: path-filter
     if: needs.path-filter.outputs.renovate-config-validator == 'true'
-    runs-on: "ubuntu-22.04"
     permissions: {}
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: run renovate-config-validator
-        run: |
-          nix develop --command pre-commit run renovate-config-validator --files ${{ needs.path-filter.outputs.renovate-config-validator-files }}
+    with:
+      changed-files: ${{needs.path-filter.outputs.renovate-config-validator-files}}
