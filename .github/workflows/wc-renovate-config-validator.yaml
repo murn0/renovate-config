@@ -15,11 +15,17 @@ on:
       changed-files:
         required: true
         type: string
+        description: |
+          変更したファイル名一覧を指定
+          https://github.com/dorny/paths-filter
+
 jobs:
   renovate-config-validator:
     timeout-minutes: 10
     runs-on: ${{fromJSON(inputs.runs-on)}}
     permissions: {}
+    env:
+      PRE_COMMIT_COLOR: always
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27

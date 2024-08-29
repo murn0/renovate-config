@@ -9,7 +9,7 @@ env:
   PRE_COMMIT_COLOR: always
 jobs:
   actionlint:
-    timeout-minutes: 10
+    timeout-minutes: 30
     runs-on: "ubuntu-22.04"
     permissions: {}
     steps:
