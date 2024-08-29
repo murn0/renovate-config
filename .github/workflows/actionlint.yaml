@@ -5,14 +5,26 @@ on:
   pull_request:
     paths:
       - .github/workflows/*.yaml
-      - aqua/imports/actionlint.yaml
-      - aqua/imports/reviewdog.yaml
+env:
+  PRE_COMMIT_COLOR: always
 jobs:
   actionlint:
-    uses: suzuki-shunsuke/actionlint-workflow/.github/workflows/actionlint.yaml@b6a5f966d4504893b2aeb60cf2b0de8946e48504 # v0.5.0
-    with:
-      aqua_version: v2.25.0
-      aqua_policy_allow: true
-    permissions:
-      pull-requests: write
-      contents: read
+    timeout-minutes: 30
+    runs-on: "ubuntu-22.04"
+    permissions: {}
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: check ghalint version
+        run: |
+          nix build .#ghalint
+          ./result/bin/ghalint --version
+      - name: run actionlint
+        run: |
+          nix develop --command pre-commit run actionlint --all-files
+      - name: run ghalint
+        run: |
+          nix develop --command pre-commit run ghalint --all-files
+

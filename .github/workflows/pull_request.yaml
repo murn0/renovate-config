@@ -10,26 +10,54 @@ jobs:
     secrets:
       gh_app_id: ${{secrets.GH_APP_ID}}
       gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
-  
-  auto-merge:
-    permissions:
-      contents: read
-    uses: murn0/renovate-automerge-workflow/.github/workflows/main.yaml@c712e0419d4115557fbc1ce2260bd0aa4802692c # v0.4.1
+
+  path-filter:
+    timeout-minutes: 10
+    runs-on: "ubuntu-22.04"
+    outputs:
+      renovate-config-validator: ${{steps.changes.outputs.renovate-config-validator}}
+      renovate-config-validator-files: ${{ steps.changes.outputs.renovate-config-validator_files }}
+    permissions: {}
+    steps:
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: changes
+        with:
+          list-files: shell
+          filters: |
+            renovate-config-validator:
+              - default.json
+              - renovate.json
+              - .github/workflows/pull_request.yaml
+
+  renovate-config-validator:
+    uses: ./.github/workflows/wc-renovate-config-validator.yaml
+    needs: path-filter
+    if: needs.path-filter.outputs.renovate-config-validator == 'true'
+    permissions: {}
     with:
-      filters: |
-        ghalint:
-          - .github/workflows/*.yaml
-          - aqua/aqua.yaml
-          - aqua/imports/ghalint.yaml
-          - ghalint.yaml
-        renovate-config-validator:
-          - renovate.json
-          - .github/workflows/pull_request.yaml
-        update-aqua-checksums:
-          - aqua/aqua.yaml
-          - aqua/imports/*.yaml
-          - aqua/aqua-checksums.json
-          - .github/workflows/pull_request.yaml
+      changed-files: ${{needs.path-filter.outputs.renovate-config-validator-files}}
+
+  status-check:
+    uses: ./.github/workflows/wc-status-check.yaml
+    permissions: {}
+    if: failure()
+    needs:
+      - renovate-config-validator
+
+  enable-automerge:
+    uses: ./.github/workflows/wc-enable-auto-merge.yaml
+    needs:
+      - status-check
+    permissions:
+      contents: write # For enable automerge
+      pull-requests: write # For enable automerge
+    # "! failure() && ! cancelled()" is required. success() returns false if dependent jobs are skipped.
+    # https://github.com/community/community/discussions/45058
+    # By default success() is used so we have to override success() by "! failure() && ! cancelled()"
+    if: |
+      ! failure() && ! cancelled() && github.event.pull_request.user.login == 'renovate[bot]' && contains(github.event.pull_request.body, ' **Automerge**: Enabled.')
+    with:
+      merge-method: squash
     secrets:
       gh_app_id: ${{secrets.GH_APP_ID}}
       gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}

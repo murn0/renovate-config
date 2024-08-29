@@ -1,0 +1,15 @@
+### direnv
+.direnv/
+.envrc
+
+### environment variables
+.env
+
+### nix
+result
+
+### pre-commit
+.pre-commit-config.yaml
+
+### Darwin
+.DS_STORE
