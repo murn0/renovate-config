@@ -5,7 +5,7 @@ on:
 permissions: {}
 jobs:
   release-PR:
-    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@3d4ed1b8620894318b7d43689cd3aeb2e999e8cb # v0.7.0
+    uses: murn0/generate-release-workflow/.github/workflows/release-pull-request.yaml@740f9dcbc142ea94bcecb8ccb372103c73e8d6e4 # v0.7.1
     permissions:
       issues: write # For create milestone
       pull-requests: write # For pull requests to milestone

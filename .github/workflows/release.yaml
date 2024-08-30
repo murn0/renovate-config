@@ -9,7 +9,7 @@ on:
 permissions: {}
 jobs:
   generate-release:
-    uses: murn0/generate-release-workflow/.github/workflows/wc-generate-release.yaml@3d4ed1b8620894318b7d43689cd3aeb2e999e8cb # v0.7.0
+    uses: murn0/generate-release-workflow/.github/workflows/wc-generate-release.yaml@740f9dcbc142ea94bcecb8ccb372103c73e8d6e4 # v0.7.1
     permissions:
       issues: write
     if: |
