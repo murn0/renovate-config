@@ -26,7 +26,7 @@ jobs:
           filters: |
             renovate-config-validator:
               - default.json
-              - renovate.json
+              - renovate.json5
               - .github/workflows/test.yaml
 
   renovate-config-validator:
