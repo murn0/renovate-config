@@ -1,21 +1,23 @@
-name: Generate release
+---
+name: Published release
 on:
-  pull_request:
-    branches:
-      - main
+  release:
     types:
-      - closed
-
+      - published
 permissions: {}
 jobs:
-  generate-release:
-    uses: murn0/generate-release-workflow/.github/workflows/wc-generate-release.yaml@740f9dcbc142ea94bcecb8ccb372103c73e8d6e4 # v0.7.1
+  close-milestone:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
     permissions:
       issues: write
-    if: |
-      github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
-    with:
-      draft: true
-    secrets:
-      gh_app_id: ${{secrets.GH_APP_ID}}
-      gh_app_private_key: ${{secrets.GH_APP_PRIVATE_KEY}}
+    steps:
+      - name: Close milestone
+        run: |
+          set -eu
+
+          milestones=$(gh api -X GET /repos/${{github.repository}}/milestones -f state=all)
+          milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"${{github.ref_name}}\")) | first | .number")
+          gh api -X PATCH "repos/${{github.repository}}/milestones/$milestone_number" -f state=closed
+        env:
+          GITHUB_TOKEN: ${{github.token}}
