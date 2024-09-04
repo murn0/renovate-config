@@ -27,7 +27,7 @@ jobs:
             renovate-config-validator:
               - default.json
               - renovate.json
-              - .github/workflows/pull_request.yaml
+              - .github/workflows/test.yaml
 
   renovate-config-validator:
     uses: ./.github/workflows/wc-renovate-config-validator.yaml
