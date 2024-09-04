@@ -25,6 +25,25 @@
       }: {
         formatter = pkgs.alejandra;
 
+        apps = {
+          release.program = pkgs.writeShellApplication {
+            name = "release.sh";
+            runtimeInputs = with pkgs; [git-cliff];
+            text = ''
+              filePath="RELEASE_NOTE.md"
+
+              bumpedVersion=$(git-cliff --bumped-version)
+              echo "$bumpedVersion"
+
+              # RELEASE_NOTE.mdを出力
+              git-cliff --tag "$bumpedVersion" --unreleased -o "$filePath"
+
+              # GithubにReleaseを作成
+              gh release create "$bumpedVersion" -t "$bumpedVersion" -d -F "$filePath"
+            '';
+          };
+        };
+
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             config.packages.ghalint

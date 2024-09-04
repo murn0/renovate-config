@@ -1,0 +1,86 @@
+[bump]
+initial_tag = "0.1.0"
+
+# [remote.github]
+# owner = "murn0"
+# repo = "git-cliff"
+
+[changelog]
+header = """
+# Changelog\n
+"""
+# template for the changelog body
+# https://keats.github.io/tera/docs/#introduction
+body = """
+{% if version %}\
+    {% if previous.version %}\
+        [Pull Requests]({{ self::remote_url() }}/pulls?q=is%3Apr+milestone%3A{{ version }}) | \
+        [Issues]({{ self::remote_url() }}/issues?q=is%3Aissue+milestone%3A{{ version }}) | \
+        [{{ previous.version }}...{{ version }}]({{ self::remote_url() }}/compare/{{ previous.version }}...{{ version }})\
+    {% endif %}\
+{% else %}\
+    ## [unreleased]
+{% endif %}\n
+---
+
+## Overview
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | striptags | trim | upper_first }}
+    {%- for commit in commits %}
+        {% if commit.github.pr_title -%}
+          {%- set commit_message = commit.github.pr_title -%}
+        {%- else -%}
+          {%- set commit_message = commit.message -%}
+        {%- endif -%}
+        - {{ commit.message | upper_first | trim }}\
+            {% if commit.github.username %} by @{{ commit.github.username }}{%- endif -%}
+            {% if commit.github.pr_number %} in \
+              [#{{ commit.github.pr_number }}]({{ self::remote_url() }}/pull/{{ commit.github.pr_number }}) \
+            {%- endif -%}
+    {% endfor %}
+{% endfor %}
+
+{%- if github -%}
+{% if github.contributors | filter(attribute="is_first_time", value=true) | length != 0 %}
+  {% raw %}\n{% endraw -%}
+  ## New Contributors
+{%- endif %}\
+{% for contributor in github.contributors | filter(attribute="is_first_time", value=true) %}
+  - @{{ contributor.username }} made their first contribution
+    {%- if contributor.pr_number %} in \
+      [#{{ contributor.pr_number }}]({{ self::remote_url() }}/pull/{{ contributor.pr_number }}) \
+    {%- endif %}
+{%- endfor -%}
+{%- endif -%}
+
+{%- macro remote_url() -%}
+  https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
+{%- endmacro -%}
+"""
+
+# bodyから空白を取り除く
+trim = true
+
+[git]
+# Conventional Commitsを基準にパースする
+conventional_commits = true
+# Convertional Commitsに準拠していないコミットは除外する
+filter_unconventional = true
+# `true`に設定するとConvertional Commitsに違反するので`false`を推奨
+split_commits = false
+commit_parsers = [
+    { message = "^feat*", group = "<!-- 0 -->Features" },
+    { message = "^fix*", group = "<!-- 1 -->Bug Fixes" },
+    { message = "^perf*", group = "<!-- 2 -->Performance" },
+    { message = "^refactor*", group = "<!-- 3 -->Refactor" },
+    { message = "^test*", group = "<!-- 4 -->Testing" },
+    { message = "^style*", group = "<!-- 5 -->Styling" },
+    { message = "^doc*", group = "<!-- 6 -->Documentation", default_scope = "unscoped" },
+    { message = "^chore\\(?!\\(deps\\)\\)*", group = "<!-- 7 -->Others" },
+    { message = "^chore\\(deps\\)*", group = "<!-- 8 -->Dependencies Update" },
+    { message = "^revert", skip = true },
+]
+# commit_parsersによってマッチしなかったコミットをフィルタリングしない
+filter_commits = false
+topo_order = false
+sort_commits = "newest"
