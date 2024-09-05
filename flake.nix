@@ -36,7 +36,7 @@
               echo "$bumpedVersion"
 
               # RELEASE_NOTE.mdを出力
-              git-cliff --tag "$bumpedVersion" --unreleased -o "$filePath"
+              git-cliff --tag "$bumpedVersion" --unreleased -o "$filePath" -c "./.github/cliff.toml"
 
               # GithubにReleaseを作成
               gh release create "$bumpedVersion" -t "$bumpedVersion" -d -F "$filePath"
