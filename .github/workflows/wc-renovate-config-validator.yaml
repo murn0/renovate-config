@@ -31,6 +31,7 @@ jobs:
       - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: DeterminateSystems/magic-nix-cache-action@87e8236f46702ab0ce5a058b605a173ec88d618e # v6
       - name: run renovate-config-validator
         run: |
           nix develop --command pre-commit run renovate-config-validator --files ${{inputs.changed-files}}
