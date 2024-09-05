@@ -28,7 +28,7 @@
         apps = {
           release.program = pkgs.writeShellApplication {
             name = "release.sh";
-            runtimeInputs = with pkgs; [git-cliff];
+            runtimeInputs = with pkgs; [git-cliff gh];
             text = ''
               filePath="RELEASE_NOTE.md"
 
