@@ -20,4 +20,4 @@ jobs:
           milestone_number=$(echo "${milestones}" | jq ". | map(select(.title == \"${{github.ref_name}}\")) | first | .number")
           gh api -X PATCH "repos/${{github.repository}}/milestones/$milestone_number" -f state=closed
         env:
-          GITHUB_TOKEN: ${{github.token}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
