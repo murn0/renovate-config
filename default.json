@@ -8,7 +8,7 @@
 		{ "matchManagers": ["github-actions"], "versioning": "semver" },
 		{ "enabled": false, "matchUpdateTypes": ["digest"] }
 	],
-  "platformAutomerge": true,
+	"platformAutomerge": true,
 	"labels": ["dependencies"],
 	"customManagers": [
 		{
