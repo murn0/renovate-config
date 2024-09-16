@@ -68,17 +68,18 @@ conventional_commits = true
 filter_unconventional = true
 # `true`に設定するとConvertional Commitsに違反するので`false`を推奨
 split_commits = false
+# プルリクエストのラベルベースでパースする
 commit_parsers = [
-    { message = "^feat*", group = "<!-- 0 -->Features" },
-    { message = "^fix*", group = "<!-- 1 -->Bug Fixes" },
-    { message = "^perf*", group = "<!-- 2 -->Performance" },
-    { message = "^refactor*", group = "<!-- 3 -->Refactor" },
-    { message = "^test*", group = "<!-- 4 -->Testing" },
-    { message = "^style*", group = "<!-- 5 -->Styling" },
-    { message = "^doc*", group = "<!-- 6 -->Documentation", default_scope = "unscoped" },
-    { message = "^chore\\(?!\\(deps\\)\\)*", group = "<!-- 7 -->Others" },
-    { message = "^chore\\(deps\\)*", group = "<!-- 8 -->Dependencies Update" },
-    { message = "^revert", skip = true },
+    { field = "github.pr_labels", pattern = "breaking-change", group = "<!-- 0 -->Breaking changes" },
+    { field = "github.pr_labels", pattern = "feature", group = "<!-- 1 -->Features" },
+    { field = "github.pr_labels", pattern = "fix", group = "<!-- 2 -->Bug Fixes" },
+    { field = "github.pr_labels", pattern = "performance", group = "<!-- 3 -->Performance" },
+    { field = "github.pr_labels", pattern = "refactor", group = "<!-- 4 -->Refactor" },
+    { field = "github.pr_labels", pattern = "test", group = "<!-- 5 -->Testing" },
+    { field = "github.pr_labels", pattern = "styling", group = "<!-- 6 -->Styling" },
+    { field = "github.pr_labels", pattern = "documentation", group = "<!-- 7 -->Documentation" },
+    { field = "github.pr_labels", pattern = "dependencies", group = "<!-- 8 -->Dependencies Update" },
+    { field = "github.pr_labels", pattern = ".*", group = "<!-- 9 -->Others" },
 ]
 # commit_parsersによってマッチしなかったコミットをフィルタリングしない
 filter_commits = false
